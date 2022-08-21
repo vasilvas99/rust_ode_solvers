@@ -6,7 +6,9 @@ type NDMatrix = ndarray::Array2<f64>;
 
 #[cfg(test)]
 mod tests {
+    use std::path::Path;
     use crate::{IVPproblem, NDvector, ivp_solvers};
+    use crate::ivp_solvers::runge_kutta::TableauLoader;
 
     fn test_rhs(t: f64, u: &NDvector)  -> NDvector {
         5.0*u*(1.0-u)
@@ -24,8 +26,18 @@ mod tests {
         };
         let res = ivp_solvers::euler_methods::explicit_euler(&p);
 
-        println!("{}", res.sol_values);
+        //println!("{}", res.sol_values);
         assert_eq!(p.initial_cond, res.sol_values.row(0))
+    }
+
+    #[test]
+    fn read_expl_rk_tableau() {
+        // NOT WORKING, FIX!!!!
+        let p = "C:\\Users\\Vasil\\CLionProjects\\rust_ode_solvers\\src\\ivp_solvers\\explicit_rk_tableau.json";
+        let path = Path::new(p);
+        let bt = ivp_solvers::runge_kutta::ExplicitButcherTableau::load_from_file(&path);
+
+        println!("{}", bt.time_weights)
     }
 }
 
